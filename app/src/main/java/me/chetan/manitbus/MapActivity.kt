@@ -2,8 +2,6 @@ package me.chetan.manitbus
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
@@ -27,13 +25,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.chetan.manitbus.alert.AlertAdapter
+import me.chetan.manitbus.alert.AlertModel
 import org.json.JSONObject
 import org.osmdroid.config.Configuration.getInstance
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
 import java.net.URL
@@ -46,6 +45,8 @@ class MapActivity : AppCompatActivity() {
     private lateinit var myLocation: Marker
     private var locationNotice: Boolean = false
     private var internetNotice: Boolean = false
+    private val alertList: ArrayList<AlertModel> = ArrayList()
+    private lateinit var recyclerViewAlert: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -70,6 +71,18 @@ class MapActivity : AppCompatActivity() {
         myLocation.setInfoWindow(null)
         map.overlays.add(myLocation)
 
+        val recyclerView=findViewById<RecyclerView>(R.id.busList)
+        val busAdapter = BusAdapter(this, busList)
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager=linearLayoutManager
+        recyclerView.adapter=busAdapter
+
+        recyclerViewAlert=findViewById(R.id.alertList)
+        val alertAdapter = AlertAdapter(this, alertList)
+        val linearLayoutManagerAlert = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerViewAlert.layoutManager=linearLayoutManagerAlert
+        recyclerViewAlert.adapter=alertAdapter
+
         val polygon = listOf(
             GeoPoint(23.2210, 77.4038),
             GeoPoint(23.2160, 77.3963),
@@ -89,10 +102,21 @@ class MapActivity : AppCompatActivity() {
                 if (location != null ) {
                     if(Util.isPointInPolygon(GeoPoint(location.latitude,location.longitude),polygon)){
                         myLocation.position = GeoPoint(location.latitude,location.longitude)
-                        locationNotice=false
+                        if(locationNotice){
+                            locationNotice=false
+                            alertList.forEach {
+                                if(it.message == "Smartphone GPS unreliable."){
+                                    alertList.remove(it)
+                                }
+                            }
+                            recyclerViewAlert.adapter?.notifyItemRangeChanged(0,alertList.size+1)
+                        }
                     }else{
-                        locationNotice=true
-                        showNotice("Smartphone GPS unreliable.")
+                        if(!locationNotice){
+                            locationNotice=true
+                            alertList.add(AlertModel("Smartphone GPS unreliable."))
+                            recyclerViewAlert.adapter?.notifyItemInserted(alertList.size)
+                        }
                     }
                 }
             }
@@ -122,12 +146,6 @@ class MapActivity : AppCompatActivity() {
             startLocationUpdates()
         }
 
-        val recyclerView=findViewById<RecyclerView>(R.id.busList)
-        val busAdapter = BusAdapter(this, busList)
-        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager=linearLayoutManager
-        recyclerView.adapter=busAdapter
-
         busList.forEach {
             val bus = Marker(map)
             busMarker.add(bus)
@@ -152,8 +170,11 @@ class MapActivity : AppCompatActivity() {
                     poll()
                 }catch (e:SocketTimeoutException){
                     runOnUiThread {
-                        internetNotice=true
-                        showNotice("Unstable internet.")
+                        if(!internetNotice){
+                            internetNotice=true
+                            alertList.add(AlertModel("Unstable internet."))
+                            recyclerViewAlert.adapter?.notifyItemInserted(alertList.size)
+                        }
                     }
                     e.printStackTrace()
                 }catch (e:Exception){
@@ -196,7 +217,7 @@ class MapActivity : AppCompatActivity() {
             setRequestProperty("Accept","application/json")
             connectTimeout=2000
             val response = JSONObject(Util.streamToString(inputStream)).getJSONArray("busList")
-            var i=0;
+            var i=0
             while(i<response.length()){
                 val bus = response.getJSONObject(i)
                 busList.forEach {
@@ -206,23 +227,21 @@ class MapActivity : AppCompatActivity() {
                 }
                 runOnUiThread {
                     moveBus()
-                    internetNotice=false
-                    hideNotice()
+                    if(internetNotice){
+                        internetNotice=false
+                        var position: Int = -1
+                        alertList.forEachIndexed { i,it ->
+                            if(it.message == "Unstable internet."){
+                                position = i
+                                alertList.remove(it)
+                            }
+                        }
+                        recyclerViewAlert.adapter?.notifyItemRemoved(position+1)
+                    }
                 }
                 i++
             }
         }
-    }
-
-    private fun showNotice(noticeText: String){
-        notice.text = noticeText
-        notice.background = ColorDrawable(Color.RED)
-    }
-
-    private fun hideNotice(){
-        if(internetNotice || locationNotice) return
-        notice.text = ""
-        notice.background = ColorDrawable(Color.TRANSPARENT)
     }
 
     private fun startLocationUpdates() {
