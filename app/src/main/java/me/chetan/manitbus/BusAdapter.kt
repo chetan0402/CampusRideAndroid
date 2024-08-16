@@ -1,9 +1,6 @@
 package me.chetan.manitbus
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,7 +41,7 @@ class BusAdapter(
         holder.busItem.setOnClickListener {
             MapActivity.highlight = model.busID
             (context as MapActivity).highlightBus()
-            context.drawList()
+            context.updateBusList()
         }
     }
 }

@@ -1,16 +1,12 @@
 package me.chetan.manitbus
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Looper
-import android.preference.PreferenceActivity
 import android.preference.PreferenceManager
-import android.util.Log
-import android.view.MotionEvent
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -37,8 +33,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Polygon
-import java.io.IOException
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
@@ -134,7 +128,22 @@ class MapActivity : AppCompatActivity() {
         recyclerView.layoutManager=linearLayoutManager
         recyclerView.adapter=busAdapter
 
-        drawBus()
+        busList.forEach {
+            val bus = Marker(map)
+            busMarker.add(bus)
+            bus.position = it.geoPoint
+            bus.id = it.busID
+            bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
+            bus.setInfoWindow(null)
+            bus.setOnMarkerClickListener { _, _ ->
+                highlight=bus.id
+                moveBus()
+                updateBusList()
+                true
+            }
+            map.overlays.add(bus)
+        }
+        map.invalidate()
 
         this.lifecycleScope.launch(Dispatchers.IO) {
             while(true){
@@ -154,36 +163,20 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    fun drawList(){
+    fun updateBusList(){
         val recyclerView=findViewById<RecyclerView>(R.id.busList)
         recyclerView.adapter?.let { recyclerView.adapter?.notifyItemRangeChanged(0, it.itemCount) }
     }
 
-    private fun drawBus(){
-        busMarker.forEach{
-            it.remove(map)
-        }
-        busMarker=ArrayList()
-        busList.forEach {
-            val bus = Marker(map)
-            busMarker.add(bus)
-            bus.position = it.geoPoint
-            bus.id = it.busID
-            if(bus.id==highlight){
-                bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24_green)
-            }else{
-                bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
+    private fun moveBus(){
+        busMarker.forEach{ marker ->
+            busList.forEach{
+                if(marker.id == it.busID){
+                    marker.position = it.geoPoint
+                }
             }
-            bus.setInfoWindow(null)
-            bus.setOnMarkerClickListener { _, _ ->
-                highlight=bus.id
-                drawBus()
-                drawList()
-                true
-            }
-            map.overlays.add(bus)
-            map.invalidate()
         }
+        map.invalidate()
     }
 
     fun highlightBus(){
@@ -212,7 +205,7 @@ class MapActivity : AppCompatActivity() {
                     }
                 }
                 runOnUiThread {
-                    drawBus()
+                    moveBus()
                     internetNotice=false
                     hideNotice()
                 }
