@@ -2,7 +2,6 @@ package me.chetan.manitbus
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,15 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.StandardCharsets
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val response = JSONObject(Util.streamToString(inputStream))
                     val listOfBus = response.getJSONArray("busList")
-                    var i=0;
+                    var i=0
                     while(i<listOfBus.length()){
                         val bus = listOfBus.getJSONObject(i)
                         MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))))
@@ -70,6 +64,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object{
-        const val BASE = "http://192.168.1.19:8000"
+        const val BASE = "http://10.3.1.59:5001"
     }
 }
