@@ -155,7 +155,7 @@ class MapActivity : AppCompatActivity() {
             bus.setInfoWindow(null)
             bus.setOnMarkerClickListener { _, _ ->
                 highlight=bus.id
-                moveBus()
+                highlightBus()
                 updateBusList()
                 true
             }
