@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,7 +38,6 @@ import java.net.URL
 
 class MapActivity : AppCompatActivity() {
     private lateinit var map: MapView
-    private lateinit var notice: TextView
     private lateinit var locationCallback: LocationCallback
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var myLocation: Marker
@@ -58,8 +56,6 @@ class MapActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        notice = findViewById(R.id.notice)
 
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
