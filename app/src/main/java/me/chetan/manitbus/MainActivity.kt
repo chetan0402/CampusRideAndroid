@@ -64,6 +64,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object{
-        const val BASE = "http://10.3.1.59:5001"
+        const val BASE = "http://ebus.manit.ac.in"
     }
 }
