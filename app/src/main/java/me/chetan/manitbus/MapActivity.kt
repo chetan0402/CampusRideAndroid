@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import me.chetan.manitbus.alert.AlertAdapter
 import me.chetan.manitbus.alert.AlertModel
@@ -45,6 +46,8 @@ class MapActivity : AppCompatActivity() {
     private var internetNotice: Boolean = false
     private val alertList: ArrayList<AlertModel> = ArrayList()
     private lateinit var recyclerViewAlert: RecyclerView
+    private var activityVisible=true
+    private var pollInstance: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -160,9 +163,23 @@ class MapActivity : AppCompatActivity() {
             map.overlays.add(bus)
         }
         map.invalidate()
+    }
 
-        this.lifecycleScope.launch(Dispatchers.IO) {
-            while(true){
+    override fun onResume() {
+        super.onResume()
+        activityVisible=true
+        pollManger()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activityVisible=false
+    }
+
+    private fun pollManger(){
+        if(pollInstance!=null && pollInstance!!.isActive && activityVisible) return
+        pollInstance = this.lifecycleScope.launch(Dispatchers.IO) {
+            while(activityVisible){
                 Thread.sleep(10_000)
                 try{
                     poll()
