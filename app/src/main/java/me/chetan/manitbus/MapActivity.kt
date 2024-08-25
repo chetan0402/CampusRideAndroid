@@ -59,6 +59,8 @@ class MapActivity : AppCompatActivity() {
 
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setBuiltInZoomControls(false)
+        map.setMultiTouchControls(true)
         val mapController = map.controller
         mapController.setZoom(16.0)
         mapController.setCenter(GeoPoint(23.2100,77.4050))
