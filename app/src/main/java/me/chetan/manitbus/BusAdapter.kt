@@ -8,8 +8,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class BusAdapter(
     private val context: Context,
@@ -35,7 +33,7 @@ class BusAdapter(
         val model = busModelArrayList[position]
         holder.busID.text = model.busID
         holder.busRoute.text = model.busRoute
-        holder.busUpdate.text = "Last updated: ${SimpleDateFormat("HH:mm:ss").format(Date((model.update*1000).toLong()))}"
+        holder.busUpdate.text = "Last updated: ${model.update.subSequence(0,2)}:${model.update.subSequence(2,4)}"
 
         if(model.busID == MapActivity.highlight){
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)

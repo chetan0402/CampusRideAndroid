@@ -44,7 +44,6 @@ class MapActivity : AppCompatActivity() {
     private lateinit var myLocation: Marker
     private var locationNotice: Boolean = false
     private var internetNotice: Boolean = false
-    private val alertList: ArrayList<AlertModel> = ArrayList()
     private lateinit var recyclerViewAlert: RecyclerView
     private lateinit var recyclerViewBus: RecyclerView
     private var activityVisible=true
@@ -79,6 +78,7 @@ class MapActivity : AppCompatActivity() {
         recyclerViewBus.layoutManager=linearLayoutManager
         recyclerViewBus.adapter=busAdapter
 
+        alertList.add(AlertModel("This is an early access build."))
         recyclerViewAlert=findViewById(R.id.alertList)
         val alertAdapter = AlertAdapter(this, alertList)
         val linearLayoutManagerAlert = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -178,7 +178,9 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun pollManger(){
-        if(pollInstance!=null && pollInstance!!.isActive && activityVisible) return
+        if(pollInstance!=null && pollInstance!!.isActive){
+            pollInstance!!.cancel()
+        }
         pollInstance = this.lifecycleScope.launch(Dispatchers.IO) {
             while(activityVisible){
                 Thread.sleep(10_000)
@@ -239,7 +241,7 @@ class MapActivity : AppCompatActivity() {
                 busList.forEach {
                     if(bus.getDouble("lat")!=0.0 && bus.getDouble("long")!=0.0 && it.busID == bus.getString("id")){
                         it.geoPoint = GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))
-                        it.update = bus.getInt("last_update")
+                        it.update = bus.getString("last_update")
                     }
                 }
                 runOnUiThread {
@@ -282,6 +284,7 @@ class MapActivity : AppCompatActivity() {
     companion object{
         val busList: ArrayList<BusModel> = ArrayList()
         var busMarker: ArrayList<Marker> = ArrayList()
+        val alertList: ArrayList<AlertModel> = ArrayList()
         var highlight: String = "none"
     }
 }

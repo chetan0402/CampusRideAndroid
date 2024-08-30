@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import me.chetan.manitbus.MapActivity
 import me.chetan.manitbus.R
 
 class AlertAdapter(
@@ -28,6 +29,14 @@ class AlertAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.alertMessage.text = alertList[position].message
+        holder.alertMessage.setOnClickListener {
+            MapActivity.alertList.forEachIndexed { index, alert ->
+                if(holder.alertMessage.text == alert.message){
+                    MapActivity.alertList.remove(alert)
+                    this.notifyItemRemoved(index)
+                }
+            }
+        }
     }
 
 }

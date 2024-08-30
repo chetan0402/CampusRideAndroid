@@ -75,9 +75,10 @@ class MainActivity : AppCompatActivity() {
                     val response = JSONObject(Util.streamToString(inputStream))
                     val listOfBus = response.getJSONArray("busList")
                     var i=0
+                    MapActivity.busList.removeAll{true}
                     while(i<listOfBus.length()){
                         val bus = listOfBus.getJSONObject(i)
-                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getInt("last_update")))
+                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getString("last_update")))
                         i++
                     }
                 }
