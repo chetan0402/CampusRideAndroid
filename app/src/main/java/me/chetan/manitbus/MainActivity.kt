@@ -1,6 +1,7 @@
 package me.chetan.manitbus
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -31,10 +32,40 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        var updateNeeded = false
         this.lifecycleScope.launch(Dispatchers.IO){
-            val url = URL("$BASE/init")
             try{
-                (url.openConnection() as HttpURLConnection).run{
+                (URL("$BASE/version").openConnection() as HttpURLConnection).run {
+                    setRequestProperty("Accept","application/json")
+                    connectTimeout=2000
+                    runOnUiThread {
+                        findViewById<TextView>(R.id.loadingText).text = "Checking for updates..."
+                    }
+                    val response = JSONObject(Util.streamToString(inputStream))
+                    if(response.getInt("version")!=applicationContext.packageManager.getPackageInfo(applicationContext.packageName,0).versionCode){
+                        updateNeeded=true
+                        runOnUiThread {
+                            findViewById<TextView>(R.id.loadingText).text = "Please update.. \n $BASE"
+                            findViewById<TextView>(R.id.loadingText).setOnClickListener {
+                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BASE)))
+                            }
+                            findViewById<LinearProgressIndicator>(R.id.loadingBar).hide()
+                        }
+                    }
+                }
+            }catch(e:Exception){
+                runOnUiThread {
+                    val loading=findViewById<TextView>(R.id.loadingText)
+                    val loadingBar=findViewById<LinearProgressIndicator>(R.id.loadingBar)
+                    loading.text = "Internet issue. Unable to get data.\n Check your connection.\n Restart application"
+                    loadingBar.hide()
+                }
+                e.printStackTrace()
+                return@launch
+            }
+            if(updateNeeded) return@launch
+            try{
+                (URL("$BASE/init").openConnection() as HttpURLConnection).run{
                     setRequestProperty("Accept","application/json")
                     connectTimeout=2000
                     runOnUiThread {
@@ -46,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                     var i=0
                     while(i<listOfBus.length()){
                         val bus = listOfBus.getJSONObject(i)
-                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))))
+                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getInt("last_update")))
                         i++
                     }
                 }

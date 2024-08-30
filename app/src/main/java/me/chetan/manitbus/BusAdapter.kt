@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class BusAdapter(
     private val context: Context,
@@ -17,6 +19,7 @@ class BusAdapter(
             val busID: TextView = busView.findViewById(R.id.busID)
             val busRoute: TextView = busView.findViewById(R.id.busRoute)
             val busItem: ConstraintLayout = busView.findViewById(R.id.busItem)
+            val busUpdate: TextView = busView.findViewById(R.id.busUpdate)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,6 +35,7 @@ class BusAdapter(
         val model = busModelArrayList[position]
         holder.busID.text = model.busID
         holder.busRoute.text = model.busRoute
+        holder.busUpdate.text = "Last updated: ${SimpleDateFormat("HH:mm:ss").format(Date((model.update*1000).toLong()))}"
 
         if(model.busID == MapActivity.highlight){
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)

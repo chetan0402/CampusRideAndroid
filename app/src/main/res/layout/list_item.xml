@@ -15,19 +15,23 @@
     <TextView
         android:textColor="@color/black"
         android:id="@+id/busID"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/busRoute"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/busRoute"/>
     <TextView
         android:textColor="@color/black"
         android:textSize="25px"
         android:id="@+id/busRoute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/busID"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/busID" />
+    <TextView
+        android:textColor="@color/black"
+        android:textSize="20px"
+        android:id="@+id/busUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/busRoute"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

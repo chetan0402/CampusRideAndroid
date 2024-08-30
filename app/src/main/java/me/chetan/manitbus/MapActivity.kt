@@ -46,6 +46,7 @@ class MapActivity : AppCompatActivity() {
     private var internetNotice: Boolean = false
     private val alertList: ArrayList<AlertModel> = ArrayList()
     private lateinit var recyclerViewAlert: RecyclerView
+    private lateinit var recyclerViewBus: RecyclerView
     private var activityVisible=true
     private var pollInstance: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,11 +73,11 @@ class MapActivity : AppCompatActivity() {
         myLocation.setInfoWindow(null)
         map.overlays.add(myLocation)
 
-        val recyclerView=findViewById<RecyclerView>(R.id.busList)
+        recyclerViewBus=findViewById(R.id.busList)
         val busAdapter = BusAdapter(this, busList)
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager=linearLayoutManager
-        recyclerView.adapter=busAdapter
+        recyclerViewBus.layoutManager=linearLayoutManager
+        recyclerViewBus.adapter=busAdapter
 
         recyclerViewAlert=findViewById(R.id.alertList)
         val alertAdapter = AlertAdapter(this, alertList)
@@ -236,8 +237,9 @@ class MapActivity : AppCompatActivity() {
             while(i<response.length()){
                 val bus = response.getJSONObject(i)
                 busList.forEach {
-                    if(it.busID == bus.getString("id")){
+                    if(bus.getDouble("lat")!=0.0 && bus.getDouble("long")!=0.0 && it.busID == bus.getString("id")){
                         it.geoPoint = GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))
+                        it.update = bus.getInt("last_update")
                     }
                 }
                 runOnUiThread {
@@ -253,6 +255,7 @@ class MapActivity : AppCompatActivity() {
                         }
                         recyclerViewAlert.adapter?.notifyItemRemoved(position+1)
                     }
+                    recyclerViewBus.adapter?.notifyDataSetChanged()
                 }
                 i++
             }
