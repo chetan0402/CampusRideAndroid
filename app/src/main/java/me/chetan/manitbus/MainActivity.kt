@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 startActivity(Intent(this@MainActivity,MapActivity::class.java))
+                finish()
             }catch(e:Exception){
                 runOnUiThread {
                     val loading=findViewById<TextView>(R.id.loadingText)

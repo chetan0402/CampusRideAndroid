@@ -78,6 +78,7 @@ class MapActivity : AppCompatActivity() {
         recyclerViewBus.layoutManager=linearLayoutManager
         recyclerViewBus.adapter=busAdapter
 
+        alertList = ArrayList()
         alertList.add(AlertModel("This is an early access build."))
         recyclerViewAlert=findViewById(R.id.alertList)
         val alertAdapter = AlertAdapter(this, alertList)
@@ -154,11 +155,11 @@ class MapActivity : AppCompatActivity() {
             bus.position = it.geoPoint
             bus.id = it.busID
             bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
-            bus.setInfoWindow(null)
             bus.setOnMarkerClickListener { _, _ ->
                 highlight=bus.id
                 highlightBus()
                 updateBusList()
+                Toast.makeText(this,"Updated ${Util.getMinutesAgo(it.update)}min ago",Toast.LENGTH_LONG).show()
                 true
             }
             map.overlays.add(bus)
@@ -284,7 +285,7 @@ class MapActivity : AppCompatActivity() {
     companion object{
         val busList: ArrayList<BusModel> = ArrayList()
         var busMarker: ArrayList<Marker> = ArrayList()
-        val alertList: ArrayList<AlertModel> = ArrayList()
+        var alertList: ArrayList<AlertModel> = ArrayList()
         var highlight: String = "none"
     }
 }

@@ -5,6 +5,7 @@ import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import java.util.Calendar
 import kotlin.math.max
 import kotlin.math.min
 
@@ -65,6 +66,15 @@ class Util {
                 intersectCount++
             }
             return (intersectCount % 2) == 1
+        }
+
+        fun getMinutesAgo(timeString: String): Int {
+            val calendar = Calendar.getInstance()
+            val currentMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+            val parsedHours = timeString.substring(0, 2).toInt()
+            val parsedMinutes = timeString.substring(2).toInt()
+            val parsedTimeInMinutes = parsedHours * 60 + parsedMinutes
+            return currentMinutes - parsedTimeInMinutes
         }
     }
 }
