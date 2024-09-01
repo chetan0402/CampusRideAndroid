@@ -25,6 +25,7 @@ import com.google.android.gms.location.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import me.chetan.manitbus.alert.AlertAdapter
 import me.chetan.manitbus.alert.AlertModel
 import org.json.JSONObject
@@ -47,7 +48,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var recyclerViewAlert: RecyclerView
     private lateinit var recyclerViewBus: RecyclerView
     private var activityVisible=true
-    private var pollInstance: Job? = null
+    private var pollInstances: MutableList<Job> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -79,7 +80,7 @@ class MapActivity : AppCompatActivity() {
         recyclerViewBus.adapter=busAdapter
 
         alertList = ArrayList()
-        alertList.add(AlertModel("This is an early access build."))
+        alertList.add(AlertModel(ContextCompat.getString(this,R.string.dev)))
         recyclerViewAlert=findViewById(R.id.alertList)
         val alertAdapter = AlertAdapter(this, alertList)
         val linearLayoutManagerAlert = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -179,12 +180,12 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun pollManger(){
-        if(pollInstance!=null && pollInstance!!.isActive){
-            pollInstance!!.cancel()
+        pollInstances.forEach {
+            it.cancel()
+            pollInstances.remove(it)
         }
-        pollInstance = this.lifecycleScope.launch(Dispatchers.IO) {
+        val pollInstance = this.lifecycleScope.launch(Dispatchers.IO) {
             while(activityVisible){
-                Thread.sleep(10_000)
                 try{
                     poll()
                 }catch (e:SocketTimeoutException){
@@ -199,8 +200,15 @@ class MapActivity : AppCompatActivity() {
                 }catch (e:Exception){
                     e.printStackTrace()
                 }
+                var i=0
+                while(i<10){
+                    yield()
+                    Thread.sleep(1_000)
+                    i++
+                }
             }
         }
+        pollInstances.add(pollInstance)
     }
 
     fun updateBusList(){

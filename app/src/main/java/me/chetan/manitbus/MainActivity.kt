@@ -47,10 +47,14 @@ class MainActivity : AppCompatActivity() {
                         updateNeeded=true
                         runOnUiThread {
                             findViewById<TextView>(R.id.loadingText).text = "Please update.. \n $BASE"
-                            findViewById<TextView>(R.id.loadingText).setOnClickListener {
-                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BASE)))
-                            }
                             findViewById<LinearProgressIndicator>(R.id.loadingBar).hide()
+                            MaterialAlertDialogBuilder(this@MainActivity).run {
+                                title = "New version available"
+                                setMessage("Please update")
+                                setPositiveButton("Update") { _ , _ ->
+                                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BASE)))
+                                }
+                            }
                         }
                     }
                 }
