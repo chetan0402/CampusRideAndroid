@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,10 +56,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }catch(e:Exception){
                 runOnUiThread {
-                    val loading=findViewById<TextView>(R.id.loadingText)
-                    val loadingBar=findViewById<LinearProgressIndicator>(R.id.loadingBar)
-                    loading.text = "Internet issue. Unable to get data.\n Check your connection.\n Restart application"
-                    loadingBar.hide()
+                    internetFailed()
                 }
                 e.printStackTrace()
                 return@launch
@@ -86,14 +84,26 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }catch(e:Exception){
                 runOnUiThread {
-                    val loading=findViewById<TextView>(R.id.loadingText)
-                    val loadingBar=findViewById<LinearProgressIndicator>(R.id.loadingBar)
-                    loading.text = "Internet issue. Unable to get data.\n Check your connection.\n Restart application"
-                    loadingBar.hide()
+                    internetFailed()
                 }
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun internetFailed(){
+        val loadingBar=findViewById<LinearProgressIndicator>(R.id.loadingBar)
+        loadingBar.hide()
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle("Unusable internet")
+            .setMessage("Please check your internet connection.")
+            .setNegativeButton("Close") { _, _ ->
+                finish()
+            }
+            .setPositiveButton("Retry") { _ , _ ->
+                startActivity(Intent(this@MainActivity,MainActivity::class.java))
+            }
+            .show()
     }
 
     companion object{

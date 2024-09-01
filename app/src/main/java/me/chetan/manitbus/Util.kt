@@ -74,7 +74,8 @@ class Util {
             val parsedHours = timeString.substring(0, 2).toInt()
             val parsedMinutes = timeString.substring(2).toInt()
             val parsedTimeInMinutes = parsedHours * 60 + parsedMinutes
-            return currentMinutes - parsedTimeInMinutes
+            val minutes = currentMinutes - parsedTimeInMinutes
+            return if(minutes<0) minutes+24*60 else minutes
         }
     }
 }
