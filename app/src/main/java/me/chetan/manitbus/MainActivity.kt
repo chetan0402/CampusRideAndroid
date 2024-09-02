@@ -56,11 +56,13 @@ class MainActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.loadingText).text = "Please update.. \n $BASE"
                             findViewById<LinearProgressIndicator>(R.id.loadingBar).hide()
                             MaterialAlertDialogBuilder(this@MainActivity).run {
-                                title = "New version available"
+                                setTitle("New version available")
                                 setMessage("Please update")
                                 setPositiveButton("Update") { _ , _ ->
                                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BASE)))
                                 }
+                                setCancelable(false)
+                                show()
                             }
                         }
                     }
@@ -105,16 +107,18 @@ class MainActivity : AppCompatActivity() {
     private fun internetFailed(){
         val loadingBar=findViewById<LinearProgressIndicator>(R.id.loadingBar)
         loadingBar.hide()
-        MaterialAlertDialogBuilder(this@MainActivity)
-            .setTitle("Unusable internet")
-            .setMessage("Please check your internet connection.")
-            .setNegativeButton("Close") { _, _ ->
+        MaterialAlertDialogBuilder(this@MainActivity).run{
+            setTitle("No internet")
+            setMessage("Please check your internet connection.")
+            setNegativeButton("Close") { _, _ ->
                 finish()
             }
-            .setPositiveButton("Retry") { _ , _ ->
+            setPositiveButton("Retry") { _ , _ ->
                 startActivity(Intent(this@MainActivity,MainActivity::class.java))
             }
-            .show()
+            setCancelable(false)
+            show()
+        }
     }
 
     companion object{
