@@ -35,7 +35,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import java.net.HttpURLConnection
-import java.net.SocketTimeoutException
 import java.net.URL
 
 class MapActivity : AppCompatActivity() {
@@ -160,7 +159,7 @@ class MapActivity : AppCompatActivity() {
                 highlight=bus.id
                 highlightBus()
                 updateBusList()
-                Toast.makeText(this,"Updated ${Util.getMinutesAgo(it.update)}min ago",Toast.LENGTH_LONG).show()
+                Toast.makeText(this,"Updated ${Util.getMinutesAgo(it.update)}min ago",Toast.LENGTH_SHORT).show()
                 true
             }
             map.overlays.add(bus)
@@ -188,7 +187,7 @@ class MapActivity : AppCompatActivity() {
             while(activityVisible){
                 try{
                     poll()
-                }catch (e:SocketTimeoutException){
+                }catch (e:Exception){
                     runOnUiThread {
                         if(!internetNotice){
                             internetNotice=true
@@ -196,8 +195,6 @@ class MapActivity : AppCompatActivity() {
                             recyclerViewAlert.adapter?.notifyItemInserted(alertList.size)
                         }
                     }
-                    e.printStackTrace()
-                }catch (e:Exception){
                     e.printStackTrace()
                 }
                 var i=0
@@ -288,6 +285,10 @@ class MapActivity : AppCompatActivity() {
             LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY,1000).build(),
             locationCallback,
             Looper.getMainLooper())
+    }
+
+    fun mapMoveToBus(busId: String){
+        map.controller.animateTo(busMarker.find { it.id == busId }?.position)
     }
 
     companion object{

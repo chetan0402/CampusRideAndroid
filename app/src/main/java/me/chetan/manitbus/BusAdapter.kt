@@ -1,6 +1,7 @@
 package me.chetan.manitbus
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,13 +38,16 @@ class BusAdapter(
 
         if(model.busID == MapActivity.highlight){
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)
+            holder.busUpdate.setTypeface(null,Typeface.BOLD)
         }else{
             holder.busItem.background = ContextCompat.getDrawable(context,R.color.white)
+            holder.busUpdate.setTypeface(null,Typeface.NORMAL)
         }
         holder.busItem.setOnClickListener {
             MapActivity.highlight = model.busID
             (context as MapActivity).highlightBus()
             context.updateBusList()
+            context.mapMoveToBus(model.busID)
         }
     }
 }

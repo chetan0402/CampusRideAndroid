@@ -1,5 +1,6 @@
 package me.chetan.manitbus
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,6 +18,7 @@ import org.json.JSONObject
 import org.osmdroid.util.GeoPoint
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.UUID
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +30,11 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        unique_id =
+            getSharedPreferences("unique_id", Context.MODE_PRIVATE).getString("unique_id","").toString()
+        if(unique_id == ""){
+            unique_id= UUID.randomUUID().toString()
         }
     }
 
@@ -67,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             }
             if(updateNeeded) return@launch
             try{
-                (URL("$BASE/init").openConnection() as HttpURLConnection).run{
+                (URL("$BASE/init?unique_id=${unique_id}").openConnection() as HttpURLConnection).run{
                     setRequestProperty("Accept","application/json")
                     connectTimeout=2000
                     runOnUiThread {
@@ -112,5 +119,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         const val BASE = "http://ebus.manit.ac.in"
+        var unique_id = ""
     }
 }
