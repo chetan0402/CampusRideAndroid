@@ -154,7 +154,7 @@ class MapActivity : AppCompatActivity() {
             busMarker.add(bus)
             bus.position = it.geoPoint
             bus.id = it.busID
-            bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
+            bus.icon = ContextCompat.getDrawable(this,R.drawable.bus)
             bus.setOnMarkerClickListener { _, _ ->
                 highlight=bus.id
                 highlightBus()
@@ -218,6 +218,7 @@ class MapActivity : AppCompatActivity() {
             busList.forEach{
                 if(marker.id == it.busID){
                     marker.position = it.geoPoint
+                    marker.rotation = it.heading.toFloat()
                 }
             }
         }
@@ -227,9 +228,9 @@ class MapActivity : AppCompatActivity() {
     fun highlightBus(){
         busMarker.forEach {
             if(it.id== highlight){
-                it.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24_green)
+                it.icon = ContextCompat.getDrawable(this,R.drawable.bus_green)
             }else{
-                it.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
+                it.icon = ContextCompat.getDrawable(this,R.drawable.bus)
             }
         }
         map.invalidate()
@@ -248,6 +249,7 @@ class MapActivity : AppCompatActivity() {
                     if(bus.getDouble("lat")!=0.0 && bus.getDouble("long")!=0.0 && it.busID == bus.getString("id")){
                         it.geoPoint = GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))
                         it.update = bus.getString("last_update")
+                        it.heading = bus.getDouble("heading")
                     }
                 }
                 runOnUiThread {

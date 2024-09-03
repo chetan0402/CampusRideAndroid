@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     MapActivity.busList.removeAll{true}
                     while(i<listOfBus.length()){
                         val bus = listOfBus.getJSONObject(i)
-                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getString("last_update")))
+                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getString("last_update"), bus.getDouble("heading")))
                         i++
                     }
                 }
