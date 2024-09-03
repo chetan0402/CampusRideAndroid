@@ -288,7 +288,11 @@ class MapActivity : AppCompatActivity() {
     }
 
     fun mapMoveToBus(busId: String){
-        map.controller.animateTo(busMarker.find { it.id == busId }?.position)
+        val busLoc = busMarker.find { it.id == busId }?.position
+        if (busLoc != null) {
+            if(busLoc.latitude==0.0 && busLoc.longitude==0.0) return
+        }
+        map.controller.animateTo(busLoc)
     }
 
     companion object{

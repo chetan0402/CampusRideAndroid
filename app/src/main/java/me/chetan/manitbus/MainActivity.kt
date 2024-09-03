@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +36,10 @@ class MainActivity : AppCompatActivity() {
             getSharedPreferences("unique_id", Context.MODE_PRIVATE).getString("unique_id","").toString()
         if(unique_id == ""){
             unique_id= UUID.randomUUID().toString()
+            getSharedPreferences("unique_id", Context.MODE_PRIVATE).edit {
+                putString("unique_id", unique_id)
+                apply()
+            }
         }
     }
 
