@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.loadingText).text = "Checking for updates..."
                     }
                     val response = JSONObject(Util.streamToString(inputStream))
-                    if(response.getInt("version")!=applicationContext.packageManager.getPackageInfo(applicationContext.packageName,0).versionCode){
+                    if(response.getInt("version")>applicationContext.packageManager.getPackageInfo(applicationContext.packageName,0).versionCode){
                         updateNeeded=true
                         runOnUiThread {
                             findViewById<TextView>(R.id.loadingText).text = "Please update.. \n $BASE"

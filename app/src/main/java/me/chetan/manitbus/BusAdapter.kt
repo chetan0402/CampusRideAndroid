@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -48,6 +49,9 @@ class BusAdapter(
             (context as MapActivity).highlightBus()
             context.updateBusList()
             context.mapMoveToBus(model.busID)
+            context.runOnUiThread {
+                Toast.makeText(context,"Updated ${Util.getMinutesAgo(model.update)}min ago", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
