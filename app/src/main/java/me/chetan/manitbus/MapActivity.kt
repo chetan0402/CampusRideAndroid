@@ -248,6 +248,7 @@ class MapActivity : AppCompatActivity() {
                     if(bus.getDouble("lat")!=0.0 && bus.getDouble("long")!=0.0 && it.busID == bus.getString("id")){
                         it.geoPoint = GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))
                         it.update = bus.getString("last_update")
+                        it.busWhere = bus.getString("where")
                     }
                 }
                 runOnUiThread {

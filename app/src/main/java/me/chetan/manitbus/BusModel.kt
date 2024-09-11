@@ -2,4 +2,4 @@ package me.chetan.manitbus
 
 import org.osmdroid.util.GeoPoint
 
-class BusModel(@JvmField var busID: String,@JvmField var busRoute: String,@JvmField var geoPoint: GeoPoint,@JvmField var update: String)
+class BusModel(@JvmField var busID: String,@JvmField var busRoute: String,@JvmField var geoPoint: GeoPoint,@JvmField var update: String,@JvmField var busWhere: String)

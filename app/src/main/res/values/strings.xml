@@ -39,4 +39,11 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="loading">loading...</string>
+    <string name="credit">Made by Chetan Sharma (CSE2 2ndYr)</string>
+    <string name="checking_update">Checking for updates...</string>
+    <string name="please_update">Please update.. \n %1$s</string>
+    <string name="getting_bus_data">Getting bus data...</string>
+    <string name="last_updated">Last updated: %1$s:%2$s</string>
+    <string name="currently_at">Currently at: %1$s</string>
 </resources>

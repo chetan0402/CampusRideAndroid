@@ -17,6 +17,7 @@ class BusAdapter(
 
         class ViewHolder(busView: View): RecyclerView.ViewHolder(busView){
             val busID: TextView = busView.findViewById(R.id.busID)
+            val busWhere: TextView = busView.findViewById(R.id.busWhere)
             val busRoute: TextView = busView.findViewById(R.id.busRoute)
             val busItem: ConstraintLayout = busView.findViewById(R.id.busItem)
             val busUpdate: TextView = busView.findViewById(R.id.busUpdate)
@@ -34,8 +35,13 @@ class BusAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = busModelArrayList[position]
         holder.busID.text = model.busID
+        holder.busWhere.text = context.getString(R.string.currently_at, model.busWhere)
         holder.busRoute.text = model.busRoute
-        holder.busUpdate.text = "Last updated: ${model.update.subSequence(0,2)}:${model.update.subSequence(2,4)}"
+        holder.busUpdate.text = context.getString(
+            R.string.last_updated,
+            model.update.subSequence(0,2),
+            model.update.subSequence(2,4)
+        )
 
         if(model.busID == MapActivity.highlight){
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)

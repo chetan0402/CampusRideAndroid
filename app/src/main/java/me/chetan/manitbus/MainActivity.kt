@@ -52,13 +52,13 @@ class MainActivity : AppCompatActivity() {
                     setRequestProperty("Accept","application/json")
                     connectTimeout=2000
                     runOnUiThread {
-                        findViewById<TextView>(R.id.loadingText).text = "Checking for updates..."
+                        findViewById<TextView>(R.id.loadingText).text = getString(R.string.checking_update)
                     }
                     val response = JSONObject(Util.streamToString(inputStream))
                     if(response.getInt("version")>applicationContext.packageManager.getPackageInfo(applicationContext.packageName,0).versionCode){
                         updateNeeded=true
                         runOnUiThread {
-                            findViewById<TextView>(R.id.loadingText).text = "Please update.. \n $BASE"
+                            findViewById<TextView>(R.id.loadingText).text = getString(R.string.please_update, BASE)
                             findViewById<LinearProgressIndicator>(R.id.loadingBar).hide()
                             MaterialAlertDialogBuilder(this@MainActivity).run {
                                 setTitle("New version available")
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                     connectTimeout=2000
                     runOnUiThread {
                         val loading=findViewById<TextView>(R.id.loadingText)
-                        loading.text="Getting bus data..."
+                        loading.text= getString(R.string.getting_bus_data)
                     }
                     val response = JSONObject(Util.streamToString(inputStream))
                     val listOfBus = response.getJSONArray("busList")
@@ -94,7 +94,12 @@ class MainActivity : AppCompatActivity() {
                     MapActivity.busList.removeAll{true}
                     while(i<listOfBus.length()){
                         val bus = listOfBus.getJSONObject(i)
-                        MapActivity.busList.add(BusModel(bus.getString("id"),bus.getString("route"), GeoPoint(bus.getDouble("lat"),bus.getDouble("long")), bus.getString("last_update")))
+                        MapActivity.busList.add(BusModel(
+                            bus.getString("id"),
+                            bus.getString("route"),
+                            GeoPoint(bus.getDouble("lat"), bus.getDouble("long")),
+                            bus.getString("last_update"),
+                            bus.getString("where")))
                         i++
                     }
                 }
