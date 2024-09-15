@@ -44,6 +44,6 @@
     <string name="checking_update">Checking for updates…</string>
     <string name="please_update">Please update.. \n %1$s</string>
     <string name="getting_bus_data">Getting bus data…</string>
-    <string name="last_updated">Last updated: %1$s:%2$s</string>
     <string name="currently_at">Last location: %1$s</string>
+    <string name="warning">warning</string>
 </resources>

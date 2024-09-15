@@ -11,8 +11,8 @@ android {
         applicationId = "me.chetan.manitbus"
         minSdk = 24
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,7 +48,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.kotlinx.coroutines.android)
-    implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation(libs.osmdroid.osmdroid.android)
     implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -159,7 +159,7 @@ class MapActivity : AppCompatActivity() {
                 highlight=bus.id
                 highlightBus()
                 updateBusList()
-                Toast.makeText(this,"Updated ${Util.getMinutesAgo(it.update)}min ago",Toast.LENGTH_SHORT).show()
+                recyclerViewBus.smoothScrollToPosition(busList.indexOfFirst { it.busID == bus.id })
                 true
             }
             map.overlays.add(bus)
