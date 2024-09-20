@@ -90,7 +90,7 @@ class BusAdapter(
                     .setAction("Learn more") {
                         MaterialAlertDialogBuilder(context)
                             .setTitle("Location of this bus maybe unreliable")
-                            .setMessage("Both the EICHER API and the GPS data from bus driver haven't been updated for more than 2 minutes. This could be due to poor network connectivity or the bus being stationary.")
+                            .setMessage("Both the EICHER API and the GPS data from bus driver haven't been updated for more than 2 minutes server-side. This could be due to poor network connectivity from driver's side or the bus being stationary.")
                             .setPositiveButton("OK",null)
                             .setNeutralButton("Learn more") {
                                 _, _ -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("${MainActivity.BASE}/how-it-works")))

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -283,7 +284,7 @@ class MapActivity : AppCompatActivity() {
             return
         }
         fusedLocationClient.requestLocationUpdates(
-            LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY,1000).build(),
+            LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY,10000).setMinUpdateDistanceMeters(5f).build(),
             locationCallback,
             Looper.getMainLooper())
     }
