@@ -99,7 +99,8 @@ class MainActivity : AppCompatActivity() {
                             bus.getString("route"),
                             GeoPoint(bus.getDouble("lat"), bus.getDouble("long")),
                             bus.getString("last_update"),
-                            bus.getString("where")))
+                            bus.getString("where"),
+                            bus.getJSONArray("path")))
                         i++
                     }
                 }

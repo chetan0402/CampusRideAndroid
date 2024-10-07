@@ -2,10 +2,10 @@ package me.chetan.manitbus
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +35,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -49,6 +50,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var recyclerViewBus: RecyclerView
     private var activityVisible=true
     private var pollInstances: MutableList<Job> = mutableListOf()
+    private val pathLines: ArrayList<Polyline> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -236,6 +238,29 @@ class MapActivity : AppCompatActivity() {
         map.invalidate()
     }
 
+    fun drawPaths(){
+        pathLines.forEach {
+            map.overlays.remove(it)
+        }
+        busList.forEach {
+            var i=0
+            val waypoints = ArrayList<GeoPoint>()
+            while (i<it.path.length()){
+                val ele = it.path.getJSONObject(i)
+                waypoints.add(GeoPoint(ele.getDouble("lat"),ele.getDouble("long")))
+                i++
+            }
+            val path = Polyline()
+            path.setPoints(waypoints)
+            path.color = ContextCompat.getColor(this,R.color.blue)
+            path.outlinePaint.strokeWidth = 10f
+            path.outlinePaint.strokeCap = Paint.Cap.ROUND
+            pathLines.add(path)
+            map.overlays.add(path)
+        }
+        map.invalidate()
+    }
+
     private fun poll(){
         val url = URL("${MainActivity.BASE}/poll")
         (url.openConnection() as HttpURLConnection).run {
@@ -250,8 +275,10 @@ class MapActivity : AppCompatActivity() {
                         it.geoPoint = GeoPoint(bus.getDouble("lat"),bus.getDouble("long"))
                         it.update = bus.getString("last_update")
                         it.busWhere = bus.getString("where")
+                        it.path = bus.getJSONArray("path")
                     }
                 }
+                drawPaths()
                 runOnUiThread {
                     moveBus()
                     if(internetNotice){
