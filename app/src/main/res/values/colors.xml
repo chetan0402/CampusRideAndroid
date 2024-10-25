@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="custom_darker_red">#fff54e4e</color>
-    <color name="custom_light_red">#fffce5e5</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="blue">#7986CB</color>
+    <color name="alert_outline">#fff54e4e</color>
+    <color name="alert_fill">#BD8A8A</color>
+    <color name="black">#FF0A0A0A</color>
+    <color name="white">#FFEAEAEA</color>
+    <color name="bus_path">#D1D1D1</color>
 </resources>

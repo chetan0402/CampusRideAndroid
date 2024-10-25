@@ -75,7 +75,7 @@ class BusAdapter(
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)
             holder.busUpdate.setTypeface(null,Typeface.BOLD)
         }else{
-            holder.busItem.background = ContextCompat.getDrawable(context,R.color.white)
+            holder.busItem.background = ContextCompat.getDrawable(context,R.color.black)
             holder.busUpdate.setTypeface(null,Typeface.NORMAL)
         }
         holder.busItem.setOnClickListener {
