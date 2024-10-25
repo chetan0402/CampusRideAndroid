@@ -50,7 +50,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var recyclerViewBus: RecyclerView
     private var activityVisible=true
     private var pollInstances: MutableList<Job> = mutableListOf()
-    private val pathLines: ArrayList<Polyline> = ArrayList()
+    private val pathLines: MutableMap<String, Polyline> = HashMap()
     override fun onCreate(savedInstanceState: Bundle?) {
         getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this))
 
@@ -153,10 +153,26 @@ class MapActivity : AppCompatActivity() {
         }
 
         busList.forEach {
+            var i=0
+            val waypoints = ArrayList<GeoPoint>()
+            while (i<it.path.length()){
+                val ele = it.path.getJSONObject(i)
+                waypoints.add(GeoPoint(ele.getDouble("lat"),ele.getDouble("long")))
+                i++
+            }
+            val path = Polyline()
+            path.setPoints(waypoints)
+            path.color = ContextCompat.getColor(this,R.color.blue)
+            path.outlinePaint.strokeWidth = 10f
+            path.outlinePaint.strokeCap = Paint.Cap.ROUND
+            pathLines[it.busID] = path
+            map.overlays.add(path)
+
             val bus = Marker(map)
             busMarker.add(bus)
             bus.position = it.geoPoint
             bus.id = it.busID
+            bus.title = it.busID
             bus.icon = ContextCompat.getDrawable(this,R.drawable.baseline_directions_bus_24)
             bus.setOnMarkerClickListener { _, _ ->
                 highlight=bus.id
@@ -238,25 +254,16 @@ class MapActivity : AppCompatActivity() {
         map.invalidate()
     }
 
-    fun drawPaths(){
-        pathLines.forEach {
-            map.overlays.remove(it)
-        }
-        busList.forEach {
+    private fun drawPaths(){
+        busList.forEach { busModel ->
             var i=0
             val waypoints = ArrayList<GeoPoint>()
-            while (i<it.path.length()){
-                val ele = it.path.getJSONObject(i)
+            while (i<busModel.path.length()){
+                val ele = busModel.path.getJSONObject(i)
                 waypoints.add(GeoPoint(ele.getDouble("lat"),ele.getDouble("long")))
                 i++
             }
-            val path = Polyline()
-            path.setPoints(waypoints)
-            path.color = ContextCompat.getColor(this,R.color.blue)
-            path.outlinePaint.strokeWidth = 10f
-            path.outlinePaint.strokeCap = Paint.Cap.ROUND
-            pathLines.add(path)
-            map.overlays.add(path)
+            pathLines[busModel.busID]?.setPoints(waypoints)
         }
         map.invalidate()
     }
