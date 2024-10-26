@@ -46,4 +46,5 @@
     <string name="getting_bus_data">Getting bus data…</string>
     <string name="currently_at">Last location: %1$s</string>
     <string name="warning">warning</string>
+    <string name="engine_status">engine status</string>
 </resources>

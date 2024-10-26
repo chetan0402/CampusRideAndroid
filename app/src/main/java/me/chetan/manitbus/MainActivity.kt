@@ -100,7 +100,8 @@ class MainActivity : AppCompatActivity() {
                             GeoPoint(bus.getDouble("lat"), bus.getDouble("long")),
                             bus.getString("last_update"),
                             bus.getString("where"),
-                            bus.getJSONArray("path")))
+                            bus.getJSONArray("path"),
+                            bus.getBoolean("engine")))
                         i++
                     }
                 }

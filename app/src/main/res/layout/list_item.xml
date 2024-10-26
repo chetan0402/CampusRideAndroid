@@ -9,6 +9,7 @@
     android:layout_marginRight="10dp"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
+    android:background="@color/transparent"
     android:padding="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,27 +19,27 @@
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/middleContent">
         <TextView
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/busID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"/>
         <TextView
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="14sp"
             android:id="@+id/busRoute"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/busID" />
         <TextView
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/busWhere"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/busRoute"
             android:textSize="11sp"/>
         <TextView
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="11sp"
             android:id="@+id/busUpdate"
             android:layout_width="match_parent"
@@ -51,6 +52,16 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/warning"
         android:src="@drawable/baseline_warning_amber_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/busEngine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/engine_status"
+        android:src="@drawable/baseline_highlight_off_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -28,6 +28,7 @@ class BusAdapter(
             val busItem: ConstraintLayout = busView.findViewById(R.id.busItem)
             val busUpdate: TextView = busView.findViewById(R.id.busUpdate)
             val busWarning: ImageView = busView.findViewById(R.id.busWarning)
+            val busEngine: ImageView = busView.findViewById(R.id.busEngine)
             private var handler = Handler(Looper.getMainLooper())
             private var runnable: Runnable? = null
 
@@ -43,6 +44,15 @@ class BusAdapter(
 
             private fun updateTime(model: BusModel){
                 busUpdate.text = "Last updated: ${Util.getMinutesAgo(model.update)}min ago"
+                if(!model.engine){
+                    busEngine.visibility = View.VISIBLE
+                    busUpdate.visibility = View.GONE
+                    busWarning.visibility = View.GONE
+                    return
+                }else{
+                    busUpdate.visibility = View.VISIBLE
+                    busEngine.visibility = View.GONE
+                }
                 if(Util.getMinutesAgo(model.update)>2){
                     busWarning.visibility = View.VISIBLE
                 }else{
@@ -75,7 +85,7 @@ class BusAdapter(
             holder.busItem.background = ContextCompat.getDrawable(context,R.drawable.round_border)
             holder.busUpdate.setTypeface(null,Typeface.BOLD)
         }else{
-            holder.busItem.background = ContextCompat.getDrawable(context,R.color.black)
+            holder.busItem.background = ContextCompat.getDrawable(context,R.color.transparent)
             holder.busUpdate.setTypeface(null,Typeface.NORMAL)
         }
         holder.busItem.setOnClickListener {
@@ -97,6 +107,11 @@ class BusAdapter(
                             }
                             .show()
                     }.show()
+            }
+        }
+        holder.busEngine.setOnClickListener {
+            (context as MapActivity).runOnUiThread {
+                Snackbar.make(context.findViewById(R.id.main),"Bus engine off.",Snackbar.LENGTH_SHORT).show()
             }
         }
     }
